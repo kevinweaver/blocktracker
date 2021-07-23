@@ -1,0 +1,9 @@
+{
+  "name": "blocktracker",
+  "version": "1.0.0",
+  "description": "A basic block explorer",
+  "main": "index.js",
+  "repository": "https://github.com/kevinweaver/blocktracker",
+  "author": "Kevin Weaver",
+  "license": "MIT"
+}
