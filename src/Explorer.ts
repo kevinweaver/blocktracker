@@ -5,8 +5,8 @@ interface ExplorerOptions {
 
 /**
  * @class Explorer
- * A basic blockchain explorer that takes in a start number
- * and an optional end number to provide several analytics.
+ * A basic blockchain explorer, given a block start number
+ * and an optional end number, it provide several analytics.
  */
 export class Explorer {
   start: number;
