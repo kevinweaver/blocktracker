@@ -13,6 +13,7 @@ export class CLI {
       )
     );
   }
+
   askExplorerType() {
     const type = {
       name: "explore",
@@ -22,51 +23,53 @@ export class CLI {
     };
     return inquirer.prompt(type);
   }
-  //askBlockCount: () => {
-  //  const type = {
-  //    name: "count",
-  //    type: "input",
-  //    message:
-  //      "How many blocks back from the current block do you want to search?",
-  //    validate: function (value: string) {
-  //      if (value.length && !!Number(value)) {
-  //        return true;
-  //      } else {
-  //        return "Please type a number of blocks.";
-  //      }
-  //    },
-  //  };
-  //  return inquirer.prompt(type);
-  //},
-  //askRange: () => {
-  //  const range = [
-  //    {
-  //      name: "start",
-  //      type: "input",
-  //      message: "What block would you like to start the search?",
-  //      validate: function (value: string) {
-  //        if (value.length && !!Number(value)) {
-  //          return true;
-  //        } else {
-  //          return "Please type a block number.";
-  //        }
-  //      },
-  //    },
-  //    {
-  //      name: "end",
-  //      type: "input",
-  //      message: "What block would you like to end the search?",
-  //      validate: function (value: string) {
-  //        if (value.length && !!Number(value)) {
-  //          return true;
-  //        } else {
-  //          return "Please type a block number.";
-  //        }
-  //      },
-  //    },
-  //  ];
-  //  return inquirer.prompt(range);
-  //},
+
+  askBlockCount() {
+    const type = {
+      name: "count",
+      type: "input",
+      message:
+        "How many blocks back from the current block do you want to search?",
+      validate: function (value: string) {
+        if (value.length && !!Number(value)) {
+          return true;
+        } else {
+          return "Please type a number of blocks.";
+        }
+      },
+    };
+    return inquirer.prompt(type);
+  }
+
+  askRange() {
+    const range = [
+      {
+        name: "start",
+        type: "input",
+        message: "What block would you like to start the search?",
+        validate: function (value: string) {
+          if (value.length && !!Number(value)) {
+            return true;
+          } else {
+            return "Please type a block number.";
+          }
+        },
+      },
+      {
+        name: "end",
+        type: "input",
+        message: "What block would you like to end the search?",
+        validate: function (value: string) {
+          if (value.length && !!Number(value)) {
+            return true;
+          } else {
+            return "Please type a block number.";
+          }
+        },
+      },
+    ];
+    return inquirer.prompt(range);
+  }
 }
 
 export default CLI;
