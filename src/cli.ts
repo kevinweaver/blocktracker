@@ -3,7 +3,11 @@ const figlet = require("figlet");
 const clear = require("clear");
 const inquirer = require("inquirer");
 
-export class CLI {
+/**
+ * @class CLI
+ * Command Line Interface prompts for user input
+ */
+export default class CLI {
   title() {
     clear();
 
@@ -15,17 +19,17 @@ export class CLI {
   }
 
   askExplorerType() {
-    const type = {
+    const question = {
       name: "explore",
       type: "list",
       message: "How would you like to explore?",
       choices: ["X blocks from current", "blocks X through Y"],
     };
-    return inquirer.prompt(type);
+    return inquirer.prompt(question);
   }
 
   askBlockCount() {
-    const type = {
+    const question = {
       name: "count",
       type: "input",
       message:
@@ -38,7 +42,7 @@ export class CLI {
         }
       },
     };
-    return inquirer.prompt(type);
+    return inquirer.prompt(question);
   }
 
   askRange() {
@@ -71,5 +75,3 @@ export class CLI {
     return inquirer.prompt(range);
   }
 }
-
-export default CLI;
