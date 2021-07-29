@@ -1,13 +1,21 @@
-import Explorer from "./Explorer";
+import Explorer from "../src/Explorer";
+import { web3 } from "../src/web3";
+import { seedTransactions, clearSeeds } from "../script/seedTransactions";
 
-beforeAll(() => {
-  // Mock web3 and replace with ganache
-  jest.mock("./web3Provider", () => {
-    function provider() {
-      return require("ganache-cli").provider();
-    }
-    return { provider };
-  });
+// Mock web3 and replace with ganache
+jest.mock("../src/web3Provider", () => {
+  function provider() {
+    return require("ganache-cli").provider();
+  }
+  return { provider };
+});
+
+beforeEach(() => {
+  seedTransactions();
+});
+
+afterEach(() => {
+  clearSeeds();
 });
 
 describe("Explorer", () => {

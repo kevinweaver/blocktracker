@@ -1,9 +1,9 @@
 import { mocked } from "ts-jest/utils";
-import { run } from "./index";
-import CLI from "./cli";
-import Explorer from "./Explorer";
+import { run } from "../src/index";
+import CLI from "../src/cli";
+import Explorer from "../src/Explorer";
 
-jest.mock("./cli", () => {
+jest.mock("../src/cli", () => {
   return jest.fn().mockImplementation(() => {
     return {
       title: () => {
@@ -21,7 +21,7 @@ jest.mock("./cli", () => {
   });
 });
 
-jest.mock("./Explorer", () => {
+jest.mock("../src/Explorer", () => {
   return jest.fn().mockImplementation(() => {
     return {
       run: () => {},
