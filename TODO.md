@@ -5,12 +5,7 @@
 - [x] Set up Jest
 - [x] Create an Explorer object
 - [x] Run a single test against Explorer object
-- [x] Create Explorer interface with optional param
-- [] Test optional param
-- [] Add Web3 dependency
-- [] Connect Web3 to Explorer
+- [x] Create CLI
+- [x] Create index.run() to connect CLI output to Explorer input
+- [x] Add web3 provider to Explorer
 - []
-
-### Note
-
-I would not typically check this in, but am doing so for the purpose of process transparency in this case.

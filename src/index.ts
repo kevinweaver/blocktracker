@@ -3,9 +3,9 @@ import Explorer from "./Explorer";
 
 /**
  * index.ts
- * Runs the CLI prompt and passes returned inputs into Explorer
+ * Runs the CLI prompt and passes returned inputs to Explorer
  */
-const promptInput = async () => {
+export const run = async () => {
   const cli = new CLI();
 
   // "BlockTracker"
@@ -28,17 +28,8 @@ const promptInput = async () => {
     end = range["end"];
   }
 
-  // Cast strings to numbers
-  return { start: +start, end: +end };
+  // Prompt input and return to Explorer
+  const explorer = new Explorer(+start, +end);
+
+  console.log(await explorer.run());
 };
-
-// Prompt input and return to Explorer
-const run = async () => {
-  const inputs = await promptInput();
-  const explorer = new Explorer(inputs["start"], inputs["end"]);
-
-  console.log("start", explorer.getStart());
-  console.log("end", explorer.getEnd());
-};
-
-run();

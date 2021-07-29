@@ -6,6 +6,8 @@ const inquirer = require("inquirer");
 /**
  * @class CLI
  * Command Line Interface prompts for user input
+ *
+ * TODO: Add flags like `--help`
  */
 export default class CLI {
   title() {

@@ -1,5 +1,7 @@
 //require("dotenv").config();
 //console.log(process.env.INFURA_RINKEBY_ENDPOINT);
+const Web3 = require("web3");
+const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
 /**
  * @class Explorer
@@ -25,8 +27,6 @@ export default class Explorer {
 
   run() {
     console.log(this.start, this.end);
-    const Web3 = require("web3");
-    let web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
 
     web3.eth.getAccounts().then(console.log);
   }
