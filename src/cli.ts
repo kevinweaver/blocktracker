@@ -54,10 +54,13 @@ export default class CLI {
         type: "input",
         message: "What block would you like to start the search?",
         validate: function (value: string) {
-          if (value.length && !!Number(value)) {
+          if (value.length && !!Number(value) && +value >= 0) {
+            if (+value < 0) {
+              return "Please type a block number > 0.";
+            }
             return true;
           } else {
-            return "Please type a block number.";
+            return "Please type a valid block number.";
           }
         },
       },
