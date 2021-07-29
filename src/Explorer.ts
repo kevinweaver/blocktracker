@@ -50,6 +50,31 @@ export default class Explorer {
     let sent = {};
     // Which are contracts
 
+    // WIP - Search input blocks
+    for (let i = this.start; i <= this.end; i++) {
+      try {
+        let block = await web3.eth.getBlock(i);
+
+        console.log(block);
+
+        if (block.transactions.length > 0) {
+          // Search transactions
+          block.transactions.forEach(function (t) {
+            //
+            web3.eth.getTransaction(t).then(console.log);
+          });
+        }
+      } catch (e) {
+        console.log("Error retreiving from block " + i, e);
+      }
+    }
+
+    //store transactions
+    //for each transaction
+    // if to == null, skip contract creation
+    //from address += value
+    //to address += value
+    //total ether += value
     return [this.start, this.end];
   }
 }
