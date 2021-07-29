@@ -21,6 +21,7 @@ export const run = async () => {
   if (type["explore"] == "X blocks from current") {
     start = await cli.askBlockCount();
     start = start["count"];
+    end = -1;
   }
   if (type["explore"] == "blocks X through Y") {
     let range = await cli.askRange();
@@ -33,3 +34,5 @@ export const run = async () => {
 
   console.log(await explorer.run());
 };
+
+run();

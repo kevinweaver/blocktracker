@@ -1,12 +1,29 @@
-import { Explorer } from "./Explorer";
+import Explorer from "./Explorer";
+
+beforeAll(() => {
+  // Mock web3 and replace with ganache
+  jest.mock("./web3Provider", () => {
+    function provider() {
+      return require("ganache-cli").provider();
+    }
+    return { provider };
+  });
+});
 
 describe("Explorer", () => {
-  beforeEach(() => {});
+  describe("run()", () => {
+    describe("given only a start value", () => {});
 
-  describe("getStart()", () => {
-    test("it returns true", () => {
-      let explorer = new Explorer({ start: 12 });
-      expect(explorer.getStart()).toEqual(12);
+    describe("given a range of blocks", () => {
+      test("it returns an array", async () => {
+        let explorer = new Explorer(0, 1);
+        expect(await explorer.run()).toEqual([0, 1]);
+      });
     });
+    //test("it throws an error given a number > the current block number")
+
+    //test("it throws an error given a number < 0")
+
+    //
   });
 });

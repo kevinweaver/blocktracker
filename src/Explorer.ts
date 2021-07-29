@@ -1,33 +1,44 @@
-//require("dotenv").config();
-//console.log(process.env.INFURA_RINKEBY_ENDPOINT);
-const Web3 = require("web3");
-const web3 = new Web3(Web3.givenProvider || "ws://localhost:8545");
+import { web3 } from "./web3";
 
 /**
  * @class Explorer
  * A basic blockchain explorer, given a block start number
- * and an optional end number, it provide several analytics.
+ * and an optional end number, it provides several analytics.
  */
 export default class Explorer {
   start: number;
   end: number;
+  current: number;
 
-  constructor(start: number, end?: number) {
+  constructor(start: number, end: number) {
     this.start = start;
-    this.end = end === undefined ? 0 : end;
+    this.end = end;
+    this.current = 0;
   }
 
-  getStart() {
-    return this.start;
+  async getCurrentBlock() {
+    return (this.current = await web3.eth.getBlockNumber());
   }
 
-  getEnd() {
-    return this.end;
-  }
+  async run() {
+    const current = await this.getCurrentBlock();
 
-  run() {
-    console.log(this.start, this.end);
+    // If the user has selected "X blocks from current", update values
+    if (this.end == -1) {
+      this.end = current;
+      this.start = current - this.start;
+    }
 
-    web3.eth.getAccounts().then(console.log);
+    console.log(this.start, this.end, this.current);
+
+    // How much Ether trasferred total
+    let totalEther = 0;
+    // Which addresses received how much Ether
+    let received = {};
+    // Which addr sent how much ether
+    let sent = {};
+    // Which are contracts
+
+    return [this.start, this.end];
   }
 }
