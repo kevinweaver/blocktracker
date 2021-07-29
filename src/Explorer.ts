@@ -16,11 +16,11 @@ export default class Explorer {
     this.current = 0;
   }
 
-  async getCurrentBlock() {
+  private async getCurrentBlock() {
     return (this.current = await web3.eth.getBlockNumber());
   }
 
-  setRangeAscending() {
+  private setRangeAscending() {
     if (this.start > this.end) {
       let tempStart = this.start;
       this.start = this.end;
@@ -49,21 +49,22 @@ export default class Explorer {
     // Which addr sent how much ether
     let sent = {};
     // Which are contracts
+    let addresses = {};
 
     // WIP - Search input blocks
     for (let i = this.start; i <= this.end; i++) {
       try {
         let block = await web3.eth.getBlock(i);
 
-        console.log(block);
+        //console.log(block);
 
-        if (block.transactions.length > 0) {
-          // Search transactions
-          block.transactions.forEach(function (t) {
-            //
-            web3.eth.getTransaction(t).then(console.log);
-          });
-        }
+        //if (block.transactions.length > 0) {
+        //  // Search transactions
+        //  block.transactions.forEach(function (t) {
+        //    //
+        //    web3.eth.getTransaction(t).then(console.log);
+        //  });
+        //}
       } catch (e) {
         console.log("Error retreiving from block " + i, e);
       }
