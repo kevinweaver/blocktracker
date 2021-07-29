@@ -20,6 +20,14 @@ export default class Explorer {
     return (this.current = await web3.eth.getBlockNumber());
   }
 
+  setRangeAscending() {
+    if (this.start > this.end) {
+      let tempStart = this.start;
+      this.start = this.end;
+      this.end = tempStart;
+    }
+  }
+
   async run() {
     const current = await this.getCurrentBlock();
 
@@ -28,6 +36,9 @@ export default class Explorer {
       this.end = current;
       this.start = current - this.start;
     }
+
+    // Ensure range is lowest -> highest
+    this.setRangeAscending();
 
     console.log(this.start, this.end, this.current);
 
