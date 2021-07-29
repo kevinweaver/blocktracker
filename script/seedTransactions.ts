@@ -1,28 +1,36 @@
 import { web3 } from "../src/web3";
 
+// There are probably tools to do this less manually,
+// but at least this is explicit/clear
 export async function seedTransactions() {
-  let alice = await web3.eth.personal.newAccount("alice");
-  let bob = await web3.eth.personal.newAccount("bob");
+  console.log("started seeding");
+  const accounts = await web3.eth.getAccounts();
+  const alice = await web3.eth.personal.newAccount("alice");
 
-  web3.eth.getBlockNumber().then(console.log);
-  // alice -> bob 1 ETH
-  // using the promise
-  console.log("alice address", alice);
-  console.log("bob address", bob);
-  console.log("sending a transaction");
+  console.log("alice", alice);
+  await web3.eth.personal.unlockAccount(alice, "alice", 10000);
 
-  web3.eth
-    .sendTransaction({
-      from: alice,
-      to: bob,
-      value: "1000000000000000",
-    })
-    .then(function (receipt) {
-      console.log("receipt", receipt);
-    });
+  web3.eth.getBlockNumber().then((num) => {
+    console.log("block num: ", num);
+  });
 
-  web3.eth.getBlockNumber().then(console.log);
+  // ganache -> alice 5 ETH
+  await web3.eth.sendTransaction({
+    to: alice,
+    from: accounts[0],
+    value: web3.utils.toWei("5", "ether"),
+  });
+
+  web3.eth.getBlockNumber().then((num) => {
+    console.log("block num: ", num);
+  });
+
+  console.log("finished seeding");
 }
 
 // TODO
 export async function clearSeeds() {}
+
+//await web3.eth.getBalance(accounts[0], (err, bal) => {
+//  console.log("Ganache balance", bal);
+//});

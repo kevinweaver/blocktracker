@@ -1,5 +1,4 @@
 import Explorer from "../src/Explorer";
-import { web3 } from "../src/web3";
 import { seedTransactions, clearSeeds } from "../script/seedTransactions";
 
 // Mock web3 and replace with ganache
@@ -10,11 +9,11 @@ jest.mock("../src/web3Provider", () => {
   return { provider };
 });
 
-beforeEach(() => {
-  seedTransactions();
+beforeAll(async () => {
+  await seedTransactions();
 });
 
-afterEach(() => {
+afterAll(() => {
   clearSeeds();
 });
 

@@ -2,8 +2,8 @@ import { web3 } from "./web3";
 
 /**
  * @class Explorer
- * A basic blockchain explorer, given a block start number
- * and an optional end number, it provides several analytics.
+ * A basic blockchain explorer, given a range of blocks
+ * it returns useful analytics
  */
 export default class Explorer {
   start: number;
