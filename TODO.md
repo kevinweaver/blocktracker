@@ -12,5 +12,9 @@
 - [x] Explorer sanitizes user input
 - [x] Explorer maps block range
 - [x] Explorer maps transactions in blocks
+- [x] Add loading screen
+- [x] Return output in table form
+- [] Validate input
 - [] Create Address class for data storage
-- []
+- [] Update index tests to run against stdout
+- [] Add "search again" prompt to CLI

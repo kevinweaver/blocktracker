@@ -2,6 +2,7 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const clear = require("clear");
 const inquirer = require("inquirer");
+const Table = require("cli-table");
 
 /**
  * @class CLI
@@ -78,5 +79,60 @@ export default class CLI {
       },
     ];
     return inquirer.prompt(range);
+  }
+
+  loading(start: number, end: number) {
+    clear();
+
+    console.log(
+      chalk.yellow(
+        figlet.textSync("exploring...", { horizontalLayout: "full" })
+      ),
+      `\nblocks ${chalk.yellow(start)} to ${chalk.yellow(end)}`
+    );
+  }
+
+  //TODO update this to output type once implemented
+  printOutput(data: any) {
+    this.title();
+    let start = 5;
+    let end = 10;
+    console.log(
+      `Analytics between blocks ${chalk.yellow(start)} and ${chalk.yellow(
+        end
+      )}:\n`
+    );
+
+    var sent = new Table({
+      head: ["Address", "Ether Sent", "Contract?"],
+    });
+    sent.push(
+      ["0x0000000000000000000000000000000000000000", "42", ""],
+      ["0x0000000000000000000000000000000000000001", "42", ""]
+    );
+
+    var received = new Table({
+      head: ["Address", "Ether Received", "Contract?"],
+    });
+    received.push(
+      ["0x0000000000000000000000000000000000000000", "42", ""],
+      ["0x0000000000000000000000000000000000000001", "42", "X"]
+    );
+
+    var meta = new Table();
+    meta.push(
+      { "Total ETH Transferred": "708" },
+      { "Unique addresses sent transactions?": "2" },
+      { "Unique addresses received transactions?": "3" },
+      { "How many uncle blocks?": "6" },
+      { "How many contracts created?": "6" }
+    );
+
+    console.log("Address Metrics");
+    console.log(sent.toString());
+    console.log(received.toString());
+
+    console.log("Global Metrics");
+    console.log(meta.toString());
   }
 }

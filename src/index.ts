@@ -32,7 +32,8 @@ export const run = async () => {
   // Prompt input and return to Explorer
   const explorer = new Explorer(+start, +end);
 
-  console.log(await explorer.run());
+  const output = await explorer.run(cli.loading);
+  cli.printOutput(output);
 };
 
 run();

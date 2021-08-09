@@ -21,6 +21,13 @@ export default class Explorer {
   }
 
   private setRangeAscending() {
+    // If the user has selected "X blocks from current", update values
+    if (this.end == -1) {
+      this.end = this.current;
+      this.start = this.current - this.start;
+    }
+
+    // If the user entered a higher start value, swap them
     if (this.start > this.end) {
       let tempStart = this.start;
       this.start = this.end;
@@ -28,28 +35,33 @@ export default class Explorer {
     }
   }
 
-  async run() {
-    const current = await this.getCurrentBlock();
-
-    // If the user has selected "X blocks from current", update values
-    if (this.end == -1) {
-      this.end = current;
-      this.start = current - this.start;
-    }
+  /**
+   * run(loading)
+   * Parses blockchain given start and end block numbers to
+   * return address analytics.
+   *
+   * @param loading - An optional loading function to console.log
+   */
+  async run(loading?: Function) {
+    this.current = await this.getCurrentBlock();
 
     // Ensure range is lowest -> highest
     this.setRangeAscending();
 
-    console.log(this.start, this.end, this.current);
+    // TODO ensure values not OOB
+    //this.validateInput()
 
     // How much Ether trasferred total
     let totalEther = 0;
-    // Which addresses received how much Ether
-    let received = {};
-    // Which addr sent how much ether
-    let sent = {};
-    // Which are contracts
-    let addresses = {};
+
+    //let addresses = [
+    //  {"0x0000000000000000000000000000000000000000": {"sent": 0, "received": 0, "contract": false }}
+    //]
+
+    // Render optional loading callback
+    if (loading) {
+      let loadingScreen = loading(this.start, this.end);
+    }
 
     // WIP - Search input blocks
     for (let i = this.start; i <= this.end; i++) {
@@ -77,5 +89,8 @@ export default class Explorer {
     //to address += value
     //total ether += value
     return [this.start, this.end];
+
+    // Example output
+    //
   }
 }
