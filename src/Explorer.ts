@@ -63,31 +63,48 @@ export default class Explorer {
     }
   }
 
-  private processTransactionData(transaction: any) {
+  private newAddress() {
+    let isContract = false; //TODO check if is contract
+    return { received: 0, sent: 0, isContract };
+  }
+
+  private processTransactionData(transaction: Transaction) {
     // Process contract creation
     if (transaction.to == null) {
       //this.contractsCreated += 1
     }
 
-    // Process To address
+    console.log(
+      "PROCESSING",
+      this.addresses,
+      transaction.to,
+      transaction.from,
+      transaction.value
+    );
+
+    // Process to address
     if (transaction.to in this.addresses) {
-      this.addresses[transaction.to].received += transaction.value;
+      this.addresses[transaction.to].received += +transaction.value;
     } else {
-      this.addresses[transaction.to].received = transaction.value;
+      this.addresses[transaction.to] = this.newAddress();
+      this.addresses[transaction.to].received = +transaction.value;
     }
 
     // Process from address
     if (transaction.from in this.addresses) {
-      this.addresses[transaction.from].sent += transaction.value;
+      this.addresses[transaction.from].sent += +transaction.value;
     } else {
-      this.addresses[transaction.to].sent = transaction.value;
+      this.addresses[transaction.from] = this.newAddress();
+      this.addresses[transaction.from].sent = +transaction.value;
     }
+
+    console.log("ADDRESSES", this.addresses);
   }
 
   /**
    * run(loading)
-   * Parses blockchain given start and end block numbers to
-   * return address analytics.
+   * Parses a blockchain given start and end block numbers to
+   * return address and transaction analytics.
    *
    * @param loading - An optional loading function to console.log
    */
@@ -100,9 +117,9 @@ export default class Explorer {
     // Ensure range is lowest -> highest
     this.setRangeAscending();
 
-    // Render optional loading callback
+    // Render optional loading screen
     if (loading) {
-      let loadingScreen = loading(this.start, this.end);
+      loading(this.start, this.end);
     }
 
     // WIP - Search input blocks
@@ -125,6 +142,7 @@ export default class Explorer {
               //console.log("SEARCHING TRANSACTION:");
               //console.log(transaction);
             } catch (e) {
+              //TODO log to this.transactionErrors
               console.log(
                 "Error retreiving from transaction" + t + "in block " + i,
                 e
@@ -136,14 +154,7 @@ export default class Explorer {
         console.log("Error retreiving from block " + i, e);
       }
     }
-
-    //store transactions
-    //from address += value
-    //to address += value
-    //total ether += value
-    return [this.start, this.end];
-
-    // Example output
-    //
+    console.log("ADDRESSES", this.addresses);
+    return this.addresses;
   }
 }

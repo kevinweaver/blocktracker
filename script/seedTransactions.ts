@@ -8,17 +8,14 @@ export async function seedTransactions() {
   const accounts = await web3.eth.getAccounts();
 
   //generate Alice
-  console.log("Generating Alice");
   const alice = await web3.eth.personal.newAccount("alice");
   await web3.eth.personal.unlockAccount(alice, "alice", 10000);
 
   //generate Bob
-  console.log("Generating Bob");
   const bob = await web3.eth.personal.newAccount("alice");
   await web3.eth.personal.unlockAccount(alice, "alice", 10000);
 
   // ganache -> alice 6 ETH
-  console.log("Ganache sends 6 ETH to Alice");
   await web3.eth.sendTransaction({
     to: alice,
     from: accounts[0],
@@ -26,7 +23,6 @@ export async function seedTransactions() {
   });
 
   // alice -> bob 5 ETH
-  console.log("Alice sends 5 ETH to Bob");
   await web3.eth.sendTransaction({
     to: bob,
     from: alice,
