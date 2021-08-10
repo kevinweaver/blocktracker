@@ -1,13 +1,19 @@
 import { web3 } from "./web3";
 
-interface Address {
+export interface Address {
   sent: number;
   received: number;
   isContract: boolean;
 }
 
-interface Addresses {
+export interface Addresses {
   [key: string]: Address;
+}
+
+export interface Transaction {
+  to: string;
+  from: string;
+  value: string;
 }
 
 // TODO Move this to a new object

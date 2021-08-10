@@ -1,4 +1,4 @@
-import Explorer from "../src/Explorer";
+import Explorer, { Address, Addresses, Transaction } from "../src/Explorer";
 import { seedTransactions, clearSeeds } from "../script/seedTransactions";
 
 // Mock web3 and replace with ganache
@@ -37,9 +37,14 @@ describe("Explorer", () => {
     describe("processes transaction data", () => {
       test("it returns a hash of Addresses", async () => {
         let explorer = new Explorer(0, 1);
-        expect(await explorer.run()).toEqual([0, 1]);
         console.log("alice", alice);
         console.log("bob", bob);
+
+        let expectedOutput: Addresses = {};
+        expectedOutput[alice] = { received: 0, sent: 0, isContract: false };
+        expectedOutput[bob] = { received: 0, sent: 0, isContract: false };
+
+        expect(await explorer.run()).toEqual(expectedOutput);
       });
     });
     //test("it throws an error given a number > the current block number")
