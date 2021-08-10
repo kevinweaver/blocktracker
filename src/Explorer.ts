@@ -57,6 +57,27 @@ export default class Explorer {
     }
   }
 
+  private processTransactionData(transaction: any) {
+    // Process contract creation
+    if (transaction.to == null) {
+      //this.contractsCreated += 1
+    }
+
+    // Process To address
+    if (transaction.to in this.addresses) {
+      this.addresses[transaction.to].received += transaction.value;
+    } else {
+      this.addresses[transaction.to].received = transaction.value;
+    }
+
+    // Process from address
+    if (transaction.from in this.addresses) {
+      this.addresses[transaction.from].sent += transaction.value;
+    } else {
+      this.addresses[transaction.to].sent = transaction.value;
+    }
+  }
+
   /**
    * run(loading)
    * Parses blockchain given start and end block numbers to
@@ -65,20 +86,13 @@ export default class Explorer {
    * @param loading - An optional loading function to console.log
    */
   async run(loading?: Function) {
+    // TODO ensure values not OOB
+    //this.validateInput()
+
     this.current = await this.getCurrentBlock();
 
     // Ensure range is lowest -> highest
     this.setRangeAscending();
-
-    // TODO ensure values not OOB
-    //this.validateInput()
-
-    // How much Ether trasferred total
-    let totalEther = 0;
-
-    //let addresses = [
-    //  {"0x0000000000000000000000000000000000000000": {"sent": 0, "received": 0, "contract": false }}
-    //]
 
     // Render optional loading callback
     if (loading) {
@@ -90,23 +104,34 @@ export default class Explorer {
       try {
         let block = await web3.eth.getBlock(i);
 
+        //console.log("SEARCHING BLOCK:");
         //console.log(block);
 
-        //if (block.transactions.length > 0) {
-        //  // Search transactions
-        //  block.transactions.forEach(function (t) {
-        //    //
-        //    web3.eth.getTransaction(t).then(console.log);
-        //  });
-        //}
+        if (block.transactions.length > 0) {
+          // Search transactions
+          //for (let t = 0; t < block.transactions.length; t++) {
+          block.transactions.forEach(async (t) => {
+            try {
+              let transaction = await web3.eth.getTransaction(t);
+              //this.processTransactionData();
+              this.processTransactionData(transaction);
+
+              //console.log("SEARCHING TRANSACTION:");
+              //console.log(transaction);
+            } catch (e) {
+              console.log(
+                "Error retreiving from transaction" + t + "in block " + i,
+                e
+              );
+            }
+          });
+        }
       } catch (e) {
         console.log("Error retreiving from block " + i, e);
       }
     }
 
     //store transactions
-    //for each transaction
-    // if to == null, skip contract creation
     //from address += value
     //to address += value
     //total ether += value

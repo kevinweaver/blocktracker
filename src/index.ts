@@ -21,7 +21,7 @@ export const run = async () => {
   if (type["explore"] == "X blocks from current") {
     start = await cli.askBlockCount();
     start = start["count"];
-    end = -1;
+    end = -1; //This special case is handled in the Explorer
   }
   if (type["explore"] == "blocks X through Y") {
     let range = await cli.askRange();
