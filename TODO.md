@@ -10,11 +10,14 @@
 - [x] Add web3 provider to Explorer
 - [x] Explorer fetches current block number
 - [x] Explorer sanitizes user input
-- [x] Explorer maps block range
-- [x] Explorer maps transactions in blocks
+- [x] Explorer maps through block range
+- [x] Explorer maps through transactions in blocks
 - [x] Add loading screen
 - [x] Return output in table form
-- [] Validate input
-- [] Create Address class for data storage
-- [] Update index tests to run against stdout
+- [x] Create Address data object
+- [] Return Address object to CLI
+- [] Explorer response specs
+- [] Validate input for OOB errors
+- [] index.run() tests to run against stdout
 - [] Add "search again" prompt to CLI
+- [] Debug and/or catch Invalid JSON RPC response: ""
