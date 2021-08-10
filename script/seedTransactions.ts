@@ -1,31 +1,40 @@
 import { web3 } from "../src/web3";
 
-// There are probably tools to do this less manually,
-// but at least this is explicit/clear
+/**
+ * Alice -> Bob 5 ETH
+ */
 export async function seedTransactions() {
-  console.log("started seeding");
+  console.log("Started seeding test data");
   const accounts = await web3.eth.getAccounts();
-  const alice = await web3.eth.personal.newAccount("alice");
 
-  console.log("alice", alice);
+  //generate Alice
+  console.log("Generating Alice");
+  const alice = await web3.eth.personal.newAccount("alice");
   await web3.eth.personal.unlockAccount(alice, "alice", 10000);
 
-  web3.eth.getBlockNumber().then((num) => {
-    console.log("block num: ", num);
-  });
+  //generate Bob
+  console.log("Generating Bob");
+  const bob = await web3.eth.personal.newAccount("alice");
+  await web3.eth.personal.unlockAccount(alice, "alice", 10000);
 
-  // ganache -> alice 5 ETH
+  // ganache -> alice 6 ETH
+  console.log("Ganache sends 6 ETH to Alice");
   await web3.eth.sendTransaction({
     to: alice,
     from: accounts[0],
+    value: web3.utils.toWei("6", "ether"),
+  });
+
+  // alice -> bob 5 ETH
+  console.log("Alice sends 5 ETH to Bob");
+  await web3.eth.sendTransaction({
+    to: bob,
+    from: alice,
     value: web3.utils.toWei("5", "ether"),
   });
 
-  web3.eth.getBlockNumber().then((num) => {
-    console.log("block num: ", num);
-  });
-
-  console.log("finished seeding");
+  console.log("Finished seeding test data.");
+  return [alice, bob];
 }
 
 // TODO
@@ -33,4 +42,8 @@ export async function clearSeeds() {}
 
 //await web3.eth.getBalance(accounts[0], (err, bal) => {
 //  console.log("Ganache balance", bal);
+//});
+
+//web3.eth.getBlockNumber().then((num) => {
+//  console.log("block num: ", num);
 //});
