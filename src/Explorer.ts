@@ -1,5 +1,21 @@
 import { web3 } from "./web3";
 
+interface Address {
+  sent: number;
+  received: number;
+  isContract: boolean;
+}
+
+interface Addresses {
+  [key: string]: Address;
+}
+
+// TODO Move this to a new object
+//interface ExplorerOutput {
+//  addresses: Addresses;
+//  totalEth: number;
+//}
+
 /**
  * @class Explorer
  * A basic blockchain explorer, given a range of blocks
@@ -9,11 +25,17 @@ export default class Explorer {
   start: number;
   end: number;
   current: number;
+  addresses: Addresses;
+  //totalEth: number;
+  //contractsCreated: number;
 
   constructor(start: number, end: number) {
     this.start = start;
     this.end = end;
     this.current = 0;
+    this.addresses = {};
+    //this.totalEth = 0;
+    //this.contractsCreated = 0;
   }
 
   private async getCurrentBlock() {
