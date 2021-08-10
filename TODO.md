@@ -21,3 +21,4 @@
 - [] index.run() tests to run against stdout
 - [] Add "search again" prompt to CLI
 - [] Debug and/or catch Invalid JSON RPC response: ""
+- [] Fix range input to properly calculate # of blocks
