@@ -34,6 +34,7 @@ export default class Explorer {
   addresses: Addresses;
   //totalEth: number;
   //contractsCreated: number;
+  //this.transactionErrors = 0
 
   constructor(start: number, end: number) {
     this.start = start;
@@ -42,6 +43,7 @@ export default class Explorer {
     this.addresses = {};
     //this.totalEth = 0;
     //this.contractsCreated = 0;
+    //this.transactionErrors = 0
   }
 
   private async getCurrentBlock() {
@@ -68,7 +70,7 @@ export default class Explorer {
     return { received: 0, sent: 0, isContract };
   }
 
-  private processTransactionData(transaction: Transaction) {
+  private async processTransactionData(transaction: Transaction) {
     // Process contract creation
     if (transaction.to == null) {
       //this.contractsCreated += 1
@@ -82,6 +84,7 @@ export default class Explorer {
       transaction.value
     );
 
+    console.log("BEFORE PROCESSED ADDRESSES", this.addresses);
     // Process to address
     if (transaction.to in this.addresses) {
       this.addresses[transaction.to].received += +transaction.value;
@@ -98,7 +101,7 @@ export default class Explorer {
       this.addresses[transaction.from].sent = +transaction.value;
     }
 
-    console.log("ADDRESSES", this.addresses);
+    console.log("PROCESSED ADDRESSES", this.addresses);
   }
 
   /**
@@ -137,7 +140,7 @@ export default class Explorer {
             try {
               let transaction = await web3.eth.getTransaction(t);
               //this.processTransactionData();
-              this.processTransactionData(transaction);
+              await this.processTransactionData(transaction);
 
               //console.log("SEARCHING TRANSACTION:");
               //console.log(transaction);
@@ -154,7 +157,7 @@ export default class Explorer {
         console.log("Error retreiving from block " + i, e);
       }
     }
-    console.log("ADDRESSES", this.addresses);
+    //console.log("ADDRESSES", this.addresses);
     return this.addresses;
   }
 }
