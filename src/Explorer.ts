@@ -1,20 +1,10 @@
 import { web3 } from "./web3";
-
-export interface Address {
-  sent: number;
-  received: number;
-  isContract: boolean;
-}
-
-export interface Addresses {
-  [key: string]: Address;
-}
-
-export interface Transaction {
-  to: string;
-  from: string;
-  value: string;
-}
+import {
+  Address,
+  Addresses,
+  Transaction,
+  ExplorerOutput,
+} from "./ExplorerInterfaces";
 
 // TODO Move this to a new object
 //interface ExplorerOutput {
@@ -27,6 +17,8 @@ export interface Transaction {
  * A basic blockchain explorer, given a range of blocks
  * it returns useful analytics
  */
+
+//TODO make Explorer functional
 export default class Explorer {
   start: number;
   end: number;
@@ -65,40 +57,37 @@ export default class Explorer {
     }
   }
 
-  private initializeAddressIfNew(address: string, addresses: Addresses) {
+  // Finds or creates an Address in the hash
+  private getAddress(address: string, addresses: Addresses): Address {
     let isContract = false; //TODO check if is contract
     if (!addresses.hasOwnProperty(address)) {
       addresses[address] = { received: 0, sent: 0, isContract };
     }
-    return addresses;
+    return addresses[address];
   }
 
   private processTransactionData(
     transaction: Transaction,
     addresses: Addresses
   ) {
-    // Process contract creation
     if (transaction.to == null) {
       //this.contractsCreated += 1
     }
 
-    // Process to address
-    this.initializeAddressIfNew(transaction.to, addresses);
-    addresses[transaction.to].received += +transaction.value;
+    // Process "to" address value
+    this.getAddress(transaction.to, addresses).received += +transaction.value;
 
-    // Process from address
-    this.initializeAddressIfNew(transaction.from, addresses);
-    addresses[transaction.from].sent += +transaction.value;
+    // Process "from" address
+    this.getAddress(transaction.from, addresses).sent += +transaction.value;
   }
 
   /**
    * run(loading)
-   * Parses a blockchain given start and end block numbers to
-   * return address and transaction analytics.
+   * Parses a blockchain given the explorer's start and end blocks
    *
    * @param loading - An optional loading function to console.log
    */
-  async run(loading?: Function) {
+  async run(loading?: Function): Promise<ExplorerOutput> {
     // TODO ensure values not OOB
     //this.validateInput()
 
@@ -123,6 +112,11 @@ export default class Explorer {
       }
     }
 
-    return processedAddresses;
+    return {
+      start: this.start,
+      end: this.end,
+      current: this.current,
+      addresses: this.addresses = processedAddresses,
+    };
   }
 }

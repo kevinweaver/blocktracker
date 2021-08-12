@@ -1,3 +1,6 @@
+import Explorer from "./Explorer";
+import { ExplorerOutput } from "./ExplorerInterfaces";
+
 const chalk = require("chalk");
 const figlet = require("figlet");
 const clear = require("clear");
@@ -93,31 +96,22 @@ export default class CLI {
   }
 
   //TODO update this to output type once implemented
-  printOutput(data: any) {
+  printDashboard(data: ExplorerOutput) {
     this.title();
-    let start = 5;
-    let end = 10;
+    console.log(`Current Block: ${chalk.yellow(data.current)}\n`);
     console.log(
-      `Analytics between blocks ${chalk.yellow(start)} and ${chalk.yellow(
-        end
+      `Analytics between blocks ${chalk.yellow(data.start)} and ${chalk.yellow(
+        data.end
       )}:\n`
     );
 
-    var sent = new Table({
-      head: ["Address", "Ether Sent", "Contract?"],
+    var addresses = new Table({
+      head: ["Address", "Ether Sent", "Ether Received", "Contract?"],
     });
-    sent.push(
-      ["0x0000000000000000000000000000000000000000", "42", ""],
-      ["0x0000000000000000000000000000000000000001", "42", ""]
-    );
 
-    var received = new Table({
-      head: ["Address", "Ether Received", "Contract?"],
-    });
-    received.push(
-      ["0x0000000000000000000000000000000000000000", "42", ""],
-      ["0x0000000000000000000000000000000000000001", "42", "X"]
-    );
+    for (const [address, value] of Object.entries(data.addresses)) {
+      addresses.push([address, value.sent, value.received, value.isContract]);
+    }
 
     var meta = new Table();
     meta.push(
@@ -129,8 +123,7 @@ export default class CLI {
     );
 
     console.log("Address Metrics");
-    console.log(sent.toString());
-    console.log(received.toString());
+    console.log(addresses.toString());
 
     console.log("Global Metrics");
     console.log(meta.toString());

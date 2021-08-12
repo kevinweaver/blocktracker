@@ -1,5 +1,11 @@
 import { web3 } from "../src/web3";
-import Explorer, { Address, Addresses, Transaction } from "../src/Explorer";
+import Explorer from "../src/Explorer";
+import {
+  Address,
+  Addresses,
+  Transaction,
+  ExplorerOutput,
+} from "../src/ExplorerInterfaces";
 import { seedUsers, clearSeeds } from "../script/seedTransactions";
 
 // Mock web3 and replace with ganache
@@ -59,22 +65,29 @@ describe("Explorer", () => {
           value: eth("2"),
         });
       });
-      test("it returns a hash of Addresses", async () => {
-        let expectedOutput: Addresses = {};
-        expectedOutput[ganache] = {
+
+      test("it returns a hash of Addresses with transaction amounts", async () => {
+        let addresses: Addresses = {};
+        addresses[ganache] = {
           received: 0,
           sent: +eth("3"),
           isContract: false,
         };
-        expectedOutput[alice] = {
+        addresses[alice] = {
           received: +eth("3"),
           sent: +eth("2"),
           isContract: false,
         };
-        expectedOutput[bob] = {
+        addresses[bob] = {
           received: +eth("2"),
           sent: 0,
           isContract: false,
+        };
+        let expectedOutput: ExplorerOutput = {
+          start: 0,
+          end: 2,
+          current: 2,
+          addresses,
         };
 
         let explorer = new Explorer(0, 2);

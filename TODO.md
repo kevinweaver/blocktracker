@@ -15,7 +15,7 @@
 - [x] Add loading screen
 - [x] Return output in table form
 - [x] Create Address data object
-- [] Return Address object to CLI
+- [x] Return Address object to CLI
 - [] Explorer response specs
 - [] Validate input for OOB errors
 - [] index.run() tests to run against stdout
