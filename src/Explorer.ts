@@ -65,39 +65,30 @@ export default class Explorer {
     }
   }
 
-  private initializeAddressIfNew(address: string) {
+  private initializeAddressIfNew(address: string, addresses: Addresses) {
     let isContract = false; //TODO check if is contract
-    if (!this.addresses.hasOwnProperty(address)) {
-      this.addresses[address] = { received: 0, sent: 0, isContract };
+    if (!addresses.hasOwnProperty(address)) {
+      addresses[address] = { received: 0, sent: 0, isContract };
     }
-    return address;
+    return addresses;
   }
 
-  private async processTransactionData(transaction: Transaction) {
+  private processTransactionData(
+    transaction: Transaction,
+    addresses: Addresses
+  ) {
     // Process contract creation
     if (transaction.to == null) {
       //this.contractsCreated += 1
     }
 
-    console.log(
-      "PROCESSING",
-      this.addresses,
-      transaction.to,
-      transaction.from,
-      transaction.value
-    );
-
-    console.log("BEFORE PROCESSED ADDRESSES: ", this.addresses);
     // Process to address
-    this.initializeAddressIfNew(transaction.to);
-    this.addresses[transaction.to].received += +transaction.value;
+    this.initializeAddressIfNew(transaction.to, addresses);
+    addresses[transaction.to].received += +transaction.value;
 
     // Process from address
-    this.initializeAddressIfNew(transaction.from);
-    this.addresses[transaction.from].sent += +transaction.value;
-
-    console.log("PROCESSED ADDRESSES", this.addresses);
-    return transaction;
+    this.initializeAddressIfNew(transaction.from, addresses);
+    addresses[transaction.from].sent += +transaction.value;
   }
 
   /**
@@ -121,39 +112,17 @@ export default class Explorer {
       loading(this.start, this.end);
     }
 
-    // WIP - Search input blocks
-    console;
+    let processedAddresses = {};
     for (let i = this.start; i <= this.end; i++) {
-      console.log("SEARCHING BLOCK ", i);
-      try {
-        let block = await web3.eth.getBlock(i);
-
-        console.log("FOUND BLOCK: ", i);
-
-        if (block.transactions.length > 0) {
-          block.transactions.map(async (t) => {
-            console.log("FOUND TRANSACTIONS: ", block.transactions.length);
-            try {
-              //Get transaction and process data
-              web3.eth
-                .getTransaction(t)
-                .then((transaction) =>
-                  this.processTransactionData(transaction)
-                );
-            } catch (e) {
-              //TODO log to this.transactionErrors
-              console.log(
-                "Error retreiving from transaction" + t + "in block " + i,
-                e
-              );
-            }
-          });
-        }
-      } catch (e) {
-        console.log("Error retreiving from block " + i, e);
+      //TODO catch errors
+      let block = await web3.eth.getBlock(i);
+      for (let t = 0; t < block.transactions.length; t++) {
+        //TODO catch errors
+        let transaction = await web3.eth.getTransaction(block.transactions[t]);
+        this.processTransactionData(transaction, processedAddresses);
       }
     }
-    //console.log("ADDRESSES", this.addresses);
-    return this.addresses;
+
+    return processedAddresses;
   }
 }

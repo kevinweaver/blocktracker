@@ -46,25 +46,20 @@ describe("Explorer", () => {
     });
 
     describe("processes transaction data", () => {
-      test("it returns a hash of Addresses", async () => {
-        // ganache -> alice 6 ETH
+      beforeEach(async () => {
         await web3.eth.sendTransaction({
           to: alice,
           from: ganache,
           value: eth("3"),
         });
 
-        // alice -> bob 5 ETH
         await web3.eth.sendTransaction({
           to: bob,
           from: alice,
           value: eth("2"),
         });
-
-        console.log("ganache", ganache);
-        console.log("alice", alice);
-        console.log("bob", bob);
-
+      });
+      test("it returns a hash of Addresses", async () => {
         let expectedOutput: Addresses = {};
         expectedOutput[ganache] = {
           received: 0,
@@ -82,14 +77,10 @@ describe("Explorer", () => {
           isContract: false,
         };
 
-        console.log("TEST STARTED!");
         let explorer = new Explorer(0, 2);
         const receivedOutput = await explorer.run();
 
-        await expect(receivedOutput).toEqual(expectedOutput);
-
-        console.log("RECEIVED", receivedOutput);
-        console.log("EXPECTED", expectedOutput);
+        expect(receivedOutput).toEqual(expectedOutput);
       });
     });
     //test("it throws an error given a number > the current block number")
