@@ -65,9 +65,12 @@ export default class Explorer {
     }
   }
 
-  private newAddress() {
+  private initializeAddressIfNew(address: string) {
     let isContract = false; //TODO check if is contract
-    return { received: 0, sent: 0, isContract };
+    if (!this.addresses.hasOwnProperty(address)) {
+      this.addresses[address] = { received: 0, sent: 0, isContract };
+    }
+    return address;
   }
 
   private async processTransactionData(transaction: Transaction) {
@@ -84,24 +87,17 @@ export default class Explorer {
       transaction.value
     );
 
-    console.log("BEFORE PROCESSED ADDRESSES", this.addresses);
+    console.log("BEFORE PROCESSED ADDRESSES: ", this.addresses);
     // Process to address
-    if (transaction.to in this.addresses) {
-      this.addresses[transaction.to].received += +transaction.value;
-    } else {
-      this.addresses[transaction.to] = this.newAddress();
-      this.addresses[transaction.to].received = +transaction.value;
-    }
+    this.initializeAddressIfNew(transaction.to);
+    this.addresses[transaction.to].received += +transaction.value;
 
     // Process from address
-    if (transaction.from in this.addresses) {
-      this.addresses[transaction.from].sent += +transaction.value;
-    } else {
-      this.addresses[transaction.from] = this.newAddress();
-      this.addresses[transaction.from].sent = +transaction.value;
-    }
+    this.initializeAddressIfNew(transaction.from);
+    this.addresses[transaction.from].sent += +transaction.value;
 
     console.log("PROCESSED ADDRESSES", this.addresses);
+    return transaction;
   }
 
   /**
@@ -126,24 +122,24 @@ export default class Explorer {
     }
 
     // WIP - Search input blocks
+    console;
     for (let i = this.start; i <= this.end; i++) {
+      console.log("SEARCHING BLOCK ", i);
       try {
         let block = await web3.eth.getBlock(i);
 
-        //console.log("SEARCHING BLOCK:");
-        //console.log(block);
+        console.log("FOUND BLOCK: ", i);
 
         if (block.transactions.length > 0) {
-          // Search transactions
-          //for (let t = 0; t < block.transactions.length; t++) {
-          block.transactions.forEach(async (t) => {
+          block.transactions.map(async (t) => {
+            console.log("FOUND TRANSACTIONS: ", block.transactions.length);
             try {
-              let transaction = await web3.eth.getTransaction(t);
-              //this.processTransactionData();
-              await this.processTransactionData(transaction);
-
-              //console.log("SEARCHING TRANSACTION:");
-              //console.log(transaction);
+              //Get transaction and process data
+              web3.eth
+                .getTransaction(t)
+                .then((transaction) =>
+                  this.processTransactionData(transaction)
+                );
             } catch (e) {
               //TODO log to this.transactionErrors
               console.log(
