@@ -14,7 +14,7 @@ export interface Transaction {
   value: string;
 }
 
-export interface ExplorerOutput {
+export interface ExplorerData {
   start: number;
   end: number;
   current: number;
@@ -22,6 +22,6 @@ export interface ExplorerOutput {
   uncles: number;
   sent: number;
   received: number;
-  contracts: number;
+  contractsCreated: number;
   addresses: Addresses;
 }

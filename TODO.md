@@ -10,14 +10,13 @@
 - [x] Add web3 provider to Explorer
 - [x] Explorer fetches current block number
 - [x] Explorer sanitizes user input
-- [x] Explorer maps through block range
-- [x] Explorer maps through transactions in blocks
+- [x] Explorer maps through blocks
+- [x] Explorer maps through transactions
 - [x] Add loading screen
 - [x] Return output in table form
 - [x] Create Address data object
 - [x] Return Address object to CLI
-- [] Explorer response specs
-- [] Collect global data
+- [] Collect contract data
 - [] Validate input for OOB errors
 - [] index.run() tests to run against stdout
 - [] Add "search again" prompt to CLI

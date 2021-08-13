@@ -3,14 +3,8 @@ import {
   Address,
   Addresses,
   Transaction,
-  ExplorerOutput,
+  ExplorerData,
 } from "./ExplorerInterfaces";
-
-// TODO Move this to a new object
-//interface ExplorerOutput {
-//  addresses: Addresses;
-//  totalEth: number;
-//}
 
 /**
  * @class Explorer
@@ -18,25 +12,23 @@ import {
  * it returns useful analytics
  */
 
-//TODO make Explorer functional
 export default class Explorer {
   start: number;
   end: number;
   current: number;
-  //totalEth: number;
-  //contractsCreated: number;
-  //this.transactionErrors = 0
 
   constructor(start: number, end: number) {
     this.start = start;
     this.end = end;
     this.current = 0;
-    //this.totalEth = 0;
-    //this.contractsCreated = 0;
-    //this.transactionErrors = 0
   }
 
-  private initializeOutput(start: number, end: number, current: number) {
+  //TODO - make end optional
+  private initializeOutput(
+    start: number,
+    end: number,
+    current: number
+  ): ExplorerData {
     return {
       start,
       end,
@@ -45,9 +37,17 @@ export default class Explorer {
       uncles: 0,
       sent: 0,
       received: 0,
-      contracts: 0,
+      contractsCreated: 0,
       addresses: {},
     };
+  }
+
+  async getCurrentBlock() {
+    return web3.eth.getBlockNumber();
+  }
+
+  async isContract(address: string): Promise<boolean> {
+    return false;
   }
 
   private setRangeAscending(current: number) {
@@ -67,34 +67,33 @@ export default class Explorer {
     return [this.start, this.end];
   }
 
-  // Finds or creates an Address in the hash
-  private getAddress(address: string, addresses: Addresses): Address {
-    let isContract = false; //TODO check if is contract
+  private async findOrCreateAddress(
+    address: string,
+    addresses: Addresses
+  ): Promise<Address> {
     if (!addresses.hasOwnProperty(address)) {
+      let isContract = await this.isContract(address);
       addresses[address] = { received: 0, sent: 0, isContract };
     }
     return addresses[address];
   }
 
-  private processTransactionData(
+  private async processTransactionData(
     transaction: Transaction,
-    data: ExplorerOutput
+    data: ExplorerData
   ) {
+    //TODO - confirm
     if (transaction.to == null) {
-      //this.contractsCreated += 1
+      ++data.contractsCreated;
     }
 
     // Process "to" address value
-    this.getAddress(
-      transaction.to,
-      data.addresses
-    ).received += +transaction.value;
+    let to = await this.findOrCreateAddress(transaction.to, data.addresses);
+    to.received += +transaction.value;
 
     // Process "from" address
-    this.getAddress(
-      transaction.from,
-      data.addresses
-    ).sent += +transaction.value;
+    let from = await this.findOrCreateAddress(transaction.from, data.addresses);
+    from.sent += +transaction.value;
   }
 
   /**
@@ -103,11 +102,11 @@ export default class Explorer {
    *
    * @param loading - An optional loading function to console.log
    */
-  async run(loading?: Function): Promise<ExplorerOutput> {
+  async run(loading?: Function): Promise<ExplorerData> {
     // TODO ensure values not OOB
     //this.validateInput()
 
-    let current = await web3.eth.getBlockNumber();
+    let current = await this.getCurrentBlock();
 
     // Ensure range is lowest -> highest
     let [start, end] = this.setRangeAscending(current);
@@ -125,7 +124,7 @@ export default class Explorer {
       for (let t = 0; t < block.transactions.length; t++) {
         //TODO catch errors
         let transaction = await web3.eth.getTransaction(block.transactions[t]);
-        this.processTransactionData(transaction, data);
+        await this.processTransactionData(transaction, data);
       }
     }
 

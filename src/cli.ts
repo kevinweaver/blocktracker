@@ -1,5 +1,5 @@
 import Explorer from "./Explorer";
-import { ExplorerOutput } from "./ExplorerInterfaces";
+import { ExplorerData } from "./ExplorerInterfaces";
 
 const chalk = require("chalk");
 const figlet = require("figlet");
