@@ -18,5 +18,10 @@ export interface ExplorerOutput {
   start: number;
   end: number;
   current: number;
+  totalEth: number;
+  uncles: number;
+  sent: number;
+  received: number;
+  contracts: number;
   addresses: Addresses;
 }

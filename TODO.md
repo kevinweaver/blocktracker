@@ -17,6 +17,7 @@
 - [x] Create Address data object
 - [x] Return Address object to CLI
 - [] Explorer response specs
+- [] Collect global data
 - [] Validate input for OOB errors
 - [] index.run() tests to run against stdout
 - [] Add "search again" prompt to CLI

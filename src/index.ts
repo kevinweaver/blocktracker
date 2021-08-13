@@ -33,7 +33,7 @@ export const run = async () => {
   const explorer = new Explorer(+start, +end);
 
   const output = await explorer.run(cli.loading);
-  cli.printDashboard(output);
+  cli.printOutput(output);
 };
 
 run();

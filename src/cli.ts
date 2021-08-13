@@ -96,7 +96,7 @@ export default class CLI {
   }
 
   //TODO update this to output type once implemented
-  printDashboard(data: ExplorerOutput) {
+  printOutput(data: ExplorerOutput) {
     this.title();
     console.log(`Current Block: ${chalk.yellow(data.current)}\n`);
     console.log(

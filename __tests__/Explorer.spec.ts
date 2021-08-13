@@ -87,6 +87,11 @@ describe("Explorer", () => {
           start: 0,
           end: 2,
           current: 2,
+          totalEth: 0,
+          uncles: 0,
+          sent: 0,
+          received: 0,
+          contracts: 0,
           addresses,
         };
 

@@ -23,7 +23,6 @@ export default class Explorer {
   start: number;
   end: number;
   current: number;
-  addresses: Addresses;
   //totalEth: number;
   //contractsCreated: number;
   //this.transactionErrors = 0
@@ -32,21 +31,31 @@ export default class Explorer {
     this.start = start;
     this.end = end;
     this.current = 0;
-    this.addresses = {};
     //this.totalEth = 0;
     //this.contractsCreated = 0;
     //this.transactionErrors = 0
   }
 
-  private async getCurrentBlock() {
-    return (this.current = await web3.eth.getBlockNumber());
+  private initializeOutput(start: number, end: number, current: number) {
+    return {
+      start,
+      end,
+      current,
+      totalEth: 0,
+      uncles: 0,
+      sent: 0,
+      received: 0,
+      contracts: 0,
+      addresses: {},
+    };
   }
 
-  private setRangeAscending() {
+  private setRangeAscending(current: number) {
     // If the user has selected "X blocks from current", update values
+    //TODO - set this to optional param
     if (this.end == -1) {
-      this.end = this.current;
-      this.start = this.current - this.start;
+      this.end = current;
+      this.start = current - this.start;
     }
 
     // If the user entered a higher start value, swap them
@@ -55,6 +64,7 @@ export default class Explorer {
       this.start = this.end;
       this.end = tempStart;
     }
+    return [this.start, this.end];
   }
 
   // Finds or creates an Address in the hash
@@ -68,17 +78,23 @@ export default class Explorer {
 
   private processTransactionData(
     transaction: Transaction,
-    addresses: Addresses
+    data: ExplorerOutput
   ) {
     if (transaction.to == null) {
       //this.contractsCreated += 1
     }
 
     // Process "to" address value
-    this.getAddress(transaction.to, addresses).received += +transaction.value;
+    this.getAddress(
+      transaction.to,
+      data.addresses
+    ).received += +transaction.value;
 
     // Process "from" address
-    this.getAddress(transaction.from, addresses).sent += +transaction.value;
+    this.getAddress(
+      transaction.from,
+      data.addresses
+    ).sent += +transaction.value;
   }
 
   /**
@@ -91,32 +107,28 @@ export default class Explorer {
     // TODO ensure values not OOB
     //this.validateInput()
 
-    this.current = await this.getCurrentBlock();
+    let current = await web3.eth.getBlockNumber();
 
     // Ensure range is lowest -> highest
-    this.setRangeAscending();
+    let [start, end] = this.setRangeAscending(current);
 
     // Render optional loading screen
     if (loading) {
-      loading(this.start, this.end);
+      loading(start, end);
     }
 
-    let processedAddresses = {};
+    let data = this.initializeOutput(start, end, current);
+
     for (let i = this.start; i <= this.end; i++) {
       //TODO catch errors
       let block = await web3.eth.getBlock(i);
       for (let t = 0; t < block.transactions.length; t++) {
         //TODO catch errors
         let transaction = await web3.eth.getTransaction(block.transactions[t]);
-        this.processTransactionData(transaction, processedAddresses);
+        this.processTransactionData(transaction, data);
       }
     }
 
-    return {
-      start: this.start,
-      end: this.end,
-      current: this.current,
-      addresses: this.addresses = processedAddresses,
-    };
+    return data;
   }
 }
