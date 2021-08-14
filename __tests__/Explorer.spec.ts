@@ -7,29 +7,26 @@ import {
   Transaction,
   ExplorerData,
 } from "../src/ExplorerInterfaces";
-import { seedUsers, clearSeeds } from "../script/seedTransactions";
+import { mockWeb3, seedUsers, saveState, revertState, eth } from "./utils";
+
+function provider() {
+  const Ganache = require("ganache-core");
+  return Ganache.provider();
+}
 
 // Mock web3 and replace with ganache
 jest.mock("../src/web3Provider", () => {
-  function provider() {
-    return require("ganache-cli").provider();
-  }
-  console.log("provider", provider);
   return { provider };
 });
-
-function eth(amount: number) {
-  return +web3.utils.toWei(`${amount}`, "ether");
-}
 
 let addresses = [];
 let defaultAccount = "";
 let alice = "";
 let bob = "";
+let snapshot_id = 0;
 
 beforeEach(async () => {
-  // Ganache -> Alice 6 ETH
-  // Alice -> Bob 5 ETH
+  snapshot_id = await saveState();
   addresses = await seedUsers();
   defaultAccount = addresses[0];
   alice = addresses[1];
@@ -37,18 +34,17 @@ beforeEach(async () => {
   return addresses;
 });
 
-afterEach(() => {
-  //TODO implement
-  clearSeeds();
+afterEach(async () => {
+  await revertState(snapshot_id);
 });
 
 describe("Explorer", () => {
   describe("getCurrentBlock()", () => {
-    test("it returns the latest block number", async () => {});
+    //test("it returns the latest block number", async () => {});
   });
 
   describe("isContract()", () => {
-    test("it returns true when address is a contract", async () => {});
+    //test("it returns true when address is a contract", async () => {});
     test("it returns false when address is not a contract", async () => {
       let explorer = new Explorer(0, 0);
       expect(explorer.isContract(defaultAccount)).resolves.toBe(false);
@@ -56,13 +52,13 @@ describe("Explorer", () => {
   });
 
   describe("run()", () => {
-    describe("given only a start value", () => {
-      test("it searches the correct number of blocks", async () => {});
-    });
+    // describe("given only a start value", () => {
+    //   test("it searches the correct number of blocks", async () => {});
+    // });
 
-    describe("given a range of blocks", () => {
-      test("it searches the correct number of blocks", async () => {});
-    });
+    // describe("given a range of blocks", () => {
+    //   test("it searches the correct number of blocks", async () => {});
+    // });
 
     describe("processes transaction data", () => {
       beforeEach(async () => {
@@ -114,46 +110,5 @@ describe("Explorer", () => {
         expect(receivedOutput).toEqual(expectedOutput);
       });
     });
-
-    // describe("determines number of contracts", () => {
-    //   beforeEach(async () => {
-    //     await web3.eth.sendTransaction({
-    //       to: bob,
-    //       from: alice,
-    //       value: eth(2),
-    //     });
-    //   });
-
-    //   test("it returns a hash of Addresses with transaction amounts", async () => {
-    //     let addresses: Addresses = {};
-    //     addresses[ganache] = {
-    //       received: 0,
-    //       sent: eth(3),
-    //       isContract: true,
-    //     };
-    //     let expectedOutput: ExplorerData = {
-    //       start: 0,
-    //       end: 1,
-    //       current: 1,
-    //       totalEth: 0,
-    //       uncles: 0,
-    //       sent: 0,
-    //       received: 0,
-    //       contractsCreated: 0,
-    //       addresses,
-    //     };
-
-    //     let explorer = new Explorer(0, 2);
-    //     const receivedOutput = await explorer.run();
-
-    //     expect(receivedOutput).toEqual(expectedOutput);
-    //   });
-    // });
-
-    //test("it throws an error given a number > the current block number")
-
-    //test("it throws an error given a number < 0")
-
-    //
   });
 });
