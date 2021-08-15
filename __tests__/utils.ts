@@ -11,7 +11,7 @@ export const eth = (amount: number) => {
 };
 
 export const saveState = async () => {
-  const result = await web3Provider.send(
+  return await web3Provider.send(
     {
       jsonrpc: "2.0",
       method: "evm_snapshot",
@@ -19,10 +19,9 @@ export const saveState = async () => {
     },
     () => {}
   );
-  return result;
 };
 
-export const revertState = async (id: number) => {
+export const revertState = async () => {
   await web3Provider.send(
     {
       jsonrpc: "2.0",

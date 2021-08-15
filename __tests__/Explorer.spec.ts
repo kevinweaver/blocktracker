@@ -26,7 +26,8 @@ let bob = "";
 let snapshot_id = 0;
 
 beforeEach(async () => {
-  snapshot_id = await saveState();
+  await saveState();
+
   addresses = await seedUsers();
   defaultAccount = addresses[0];
   alice = addresses[1];
@@ -35,12 +36,25 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  await revertState(snapshot_id);
+  // Revert to fresh blockchain
+  await revertState();
 });
 
 describe("Explorer", () => {
+
   describe("getCurrentBlock()", () => {
-    //test("it returns the latest block number", async () => {});
+    beforeEach(async () => {
+      await web3.eth.sendTransaction({
+        to: alice,
+        from: defaultAccount,
+        value: eth(11),
+      });
+    });
+
+    test("it returns the latest block number", async () => {
+      let explorer = new Explorer(0, 0);
+      expect(explorer.getCurrentBlock()).resolves.toBe(1)
+    });
   });
 
   describe("isContract()", () => {
@@ -75,7 +89,7 @@ describe("Explorer", () => {
         });
       });
 
-      test("it returns a hash of Addresses with transaction amounts", async () => {
+      test("it returns analytics data", async () => {
         let addresses: Addresses = {};
         addresses[defaultAccount] = {
           received: 0,
