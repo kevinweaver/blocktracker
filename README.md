@@ -30,3 +30,15 @@ To run tests:
 | src/Explorer.ts |   The class that functions to traverse a blockchain and return various analytics.    |
 | src/index.ts    |             Takes the output of the CLI and provides it to the Explorer.             |
 | TODO.md         | I typically wouldn't check this in, but did so in this case to document my approach. |
+
+## Demo
+
+BlockTracker has two input types:
+
+1. Exploring X blocks from current.
+
+![Current Block Demo](http://www.giphy.com/gifs/OO1vDmvSmSlaNwSnof/giphy.gif)
+
+2. Exploring blocks X through Y.
+
+![Block Range Demo](http://www.giphy.com/gifs/szulUCjRZOUVZPOjai/giphy.gif)

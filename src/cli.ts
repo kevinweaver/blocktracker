@@ -38,8 +38,7 @@ export default class CLI {
     const question = {
       name: "count",
       type: "input",
-      message:
-        "How many blocks back from the current block do you want to search?",
+      message: "How many blocks from current? (0 == current)",
       validate: function (value: string) {
         if (!Number(value) && +value != 0) {
           return "Please type a valid block number.";
@@ -96,8 +95,13 @@ export default class CLI {
         chalk.yellow(
           figlet.textSync("exploring...", { horizontalLayout: "full" })
         ),
-        `\nblocks ${chalk.yellow(start)} to ${chalk.yellow(end)}`
+        "\n"
       );
+      if (start == end) {
+        `block ${chalk.yellow(start)}`;
+      } else {
+        console.log(`blocks ${chalk.yellow(start)} to ${chalk.yellow(end)}`);
+      }
     }
   }
 
@@ -105,22 +109,33 @@ export default class CLI {
   printOutput(data: ExplorerData) {
     this.title();
     console.log(`Current Block: ${chalk.yellow(data.current)}\n`);
-    console.log(
-      `Analytics between blocks ${chalk.yellow(data.start)} and ${chalk.yellow(
-        data.end
-      )}:\n`
-    );
+    if (data.start != data.current) {
+      console.log(
+        `Analytics between blocks ${chalk.yellow(
+          data.start
+        )} and ${chalk.yellow(data.end)}:\n`
+      );
+    }
 
-    var addresses = new Table({
-      head: ["Address", "Ether Sent", "Ether Received", "Contract?"],
+    var sent = new Table({
+      head: ["Address", "Ether Sent", "Contract?"],
+    });
+
+    var received = new Table({
+      head: ["Address", "Ether Received", "Contract?"],
     });
 
     let uniqueSent = 0;
     let uniqueReceived = 0;
     for (const [address, value] of Object.entries(data.addresses)) {
-      value.sent > 0 && ++uniqueSent;
-      value.received > 0 && ++uniqueReceived;
-      addresses.push([address, value.sent, value.received, value.isContract]);
+      if (value.sent > 0) {
+        sent.push([address, value.sent, value.isContract]);
+        ++uniqueSent;
+      }
+      if (value.received > 0) {
+        received.push([address, value.received, value.isContract]);
+        ++uniqueReceived;
+      }
     }
 
     var global = new Table();
@@ -149,8 +164,11 @@ export default class CLI {
       transactionErrors.push([value, address]);
     }
 
-    console.log("Address Metrics");
-    console.log(addresses.toString());
+    console.log("Sent Metrics");
+    console.log(sent.toString());
+
+    console.log("Received Metrics");
+    console.log(received.toString());
 
     console.log("Global Metrics");
     console.log(global.toString());
