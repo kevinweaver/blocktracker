@@ -37,8 +37,8 @@ BlockTracker has two input types:
 
 1. Exploring X blocks from current.
 
-[Current Block Demo](http://www.giphy.com/gifs/OO1vDmvSmSlaNwSnof)
+[Current Block Demo](http://www.giphy.com/gifs/OO1vDmvSmSlaNwSnof/giphy.gif)
 
 2. Exploring blocks X through Y.
 
-[Block Range Demo](http://www.giphy.com/gifs/szulUCjRZOUVZPOjai)
+[Block Range Demo](http://www.giphy.com/gifs/szulUCjRZOUVZPOjai/giphy.gif)
