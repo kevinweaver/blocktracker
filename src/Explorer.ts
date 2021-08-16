@@ -14,8 +14,6 @@ import {
  */
 
 export default class Explorer {
-  constructor() {}
-
   private initializeOutput(
     start: number,
     end: number,
