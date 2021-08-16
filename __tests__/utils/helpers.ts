@@ -32,6 +32,17 @@ export const revertState = async () => {
   );
 };
 
+export const mineBlock = async () => {
+  await web3Provider.send(
+    {
+      jsonrpc: "2.0",
+      method: "evm_mine",
+      id: 0,
+    },
+    () => {}
+  );
+};
+
 export async function seedUsers() {
   const accounts = await web3.eth.getAccounts();
   const ganache = accounts[0];

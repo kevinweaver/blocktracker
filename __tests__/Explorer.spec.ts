@@ -1,18 +1,14 @@
 //TODO switch to consts
 import { web3 } from "../src/web3";
 import Explorer from "../src/Explorer";
+import { Addresses, ExplorerData } from "../src/ExplorerInterfaces";
 import {
-  Address,
-  Addresses,
-  Transaction,
-  ExplorerData,
-} from "../src/ExplorerInterfaces";
-import {
+  eth,
   createContract,
   seedUsers,
   saveState,
   revertState,
-  eth,
+  mineBlock,
 } from "./utils/helpers";
 
 function provider() {
@@ -20,7 +16,7 @@ function provider() {
   return Ganache.provider();
 }
 
-// Mock web3 and replace with ganache
+// Mock web3 and replace network with ganache
 jest.mock("../src/web3Provider", () => {
   return { provider };
 });
@@ -41,20 +37,16 @@ beforeEach(async () => {
 });
 
 afterEach(async () => {
-  // Revert to fresh blockchain
   await revertState();
 });
 
 describe("Explorer", () => {
+  let explorer = new Explorer();
+
   describe("getCurrentBlock()", () => {
     test("returns the latest block number", async () => {
-      let explorer = new Explorer();
       expect(explorer.getCurrentBlock()).resolves.toBe(0);
-      await web3.eth.sendTransaction({
-        to: alice,
-        from: defaultAccount,
-        value: eth(11),
-      });
+      await mineBlock();
       expect(explorer.getCurrentBlock()).resolves.toBe(1);
     });
   });
@@ -73,13 +65,53 @@ describe("Explorer", () => {
   });
 
   describe("run()", () => {
-    // describe("given only a start value", () => {
-    //   test("it searches the correct number of blocks", async () => {});
-    // });
+    describe("given only a start value", () => {
+      beforeEach(async () => {
+        await mineBlock();
+        await mineBlock();
+      });
 
-    // describe("given a range of blocks", () => {
-    //   test("it searches the correct number of blocks", async () => {});
-    // });
+      test("it searches from the current block", async () => {
+        let addresses: Addresses = {};
+        let expectedOutput: ExplorerData = {
+          start: 2,
+          end: 2,
+          current: 2,
+          totalEth: 0,
+          uncles: 0,
+          contractsCreated: 0,
+          addresses,
+        };
+
+        const receivedOutput = await explorer.run({ start: 0 });
+
+        expect(receivedOutput).toEqual(expectedOutput);
+      });
+    });
+
+    describe("given a range of blocks", () => {
+      beforeEach(async () => {
+        await mineBlock();
+        await mineBlock();
+      });
+
+      test("it searches the correct number of blocks", async () => {
+        let addresses: Addresses = {};
+        let expectedOutput: ExplorerData = {
+          start: 0,
+          end: 1,
+          current: 2,
+          totalEth: 0,
+          uncles: 0,
+          contractsCreated: 0,
+          addresses,
+        };
+
+        const receivedOutput = await explorer.run({ start: 0, end: 1 });
+
+        expect(receivedOutput).toEqual(expectedOutput);
+      });
+    });
 
     describe("given transaction data and contract creation", () => {
       beforeEach(async () => {
@@ -98,7 +130,7 @@ describe("Explorer", () => {
         await createContract(defaultAccount);
       });
 
-      test("it returns correct ExplorerData", async () => {
+      test("returns accurate ExplorerData", async () => {
         let addresses: Addresses = {};
         addresses[defaultAccount] = {
           received: 0,
@@ -125,8 +157,7 @@ describe("Explorer", () => {
           addresses,
         };
 
-        let explorer = new Explorer();
-        const receivedOutput = await explorer.run(0, 3);
+        const receivedOutput = await explorer.run({ start: 0, end: 3 });
 
         expect(receivedOutput).toEqual(expectedOutput);
       });

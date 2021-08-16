@@ -14,6 +14,12 @@ export interface Transaction {
   value: string;
 }
 
+export interface RunParams {
+  start: number;
+  end?: number;
+  loading?: Function;
+}
+
 export interface ExplorerData {
   start: number;
   end: number;

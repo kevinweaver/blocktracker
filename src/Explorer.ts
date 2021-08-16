@@ -4,6 +4,7 @@ import {
   Addresses,
   Transaction,
   ExplorerData,
+  RunParams,
 } from "./ExplorerInterfaces";
 
 /**
@@ -15,7 +16,6 @@ import {
 export default class Explorer {
   constructor() {}
 
-  //TODO - make end optional
   private initializeOutput(
     start: number,
     end: number,
@@ -44,10 +44,9 @@ export default class Explorer {
     return +web3.utils.fromWei(wei, "ether");
   }
 
-  private setRangeAscending(start: number, end: number, current: number) {
+  private sanitizeInputs(start: number, end: number, current: number) {
     // If the user has selected "X blocks from current", update values
-    //TODO - set this to optional param
-    if (end == -1) {
+    if (end == undefined) {
       end = current;
       start = current - start;
     }
@@ -106,18 +105,11 @@ export default class Explorer {
    *
    * @param loading - An optional loading function to call
    */
-  async run(
-    start: number,
-    end: number,
-    loading?: Function
-  ): Promise<ExplorerData> {
-    // TODO ensure values not OOB
-    //this.validateInput()
-
+  async run({ start, end, loading }: RunParams): Promise<ExplorerData> {
     let current = await this.getCurrentBlock();
 
     // Ensure range is lowest -> highest
-    [start, end] = this.setRangeAscending(start, end, current);
+    [start, end] = this.sanitizeInputs(start, end, current);
 
     // Render optional loading screen
     if (loading) {

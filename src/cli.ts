@@ -41,11 +41,13 @@ export default class CLI {
       message:
         "How many blocks back from the current block do you want to search?",
       validate: function (value: string) {
-        if (value.length && !!Number(value)) {
-          return true;
-        } else {
-          return "Please type a number of blocks.";
+        if (!Number(value) && +value != 0) {
+          return "Please type a valid block number.";
         }
+        if (+value < 0) {
+          return "Please type a block number >= 0.";
+        }
+        return true;
       },
     };
     return inquirer.prompt(question);
@@ -58,14 +60,13 @@ export default class CLI {
         type: "input",
         message: "What block would you like to start the search?",
         validate: function (value: string) {
-          if (value.length && !!Number(value) && +value >= 0) {
-            if (+value < 0) {
-              return "Please type a block number > 0.";
-            }
-            return true;
-          } else {
+          if (!Number(value) && +value != 0) {
             return "Please type a valid block number.";
           }
+          if (+value < 0) {
+            return "Please type a block number >= 0.";
+          }
+          return true;
         },
       },
       {
@@ -73,11 +74,13 @@ export default class CLI {
         type: "input",
         message: "What block would you like to end the search?",
         validate: function (value: string) {
-          if (value.length && !!Number(value)) {
-            return true;
-          } else {
-            return "Please type a block number.";
+          if (!Number(value) && +value != 0) {
+            return "Please type a valid block number.";
           }
+          if (+value < 0) {
+            return "Please type a block number >= 0.";
+          }
+          return true;
         },
       },
     ];
@@ -117,8 +120,8 @@ export default class CLI {
       addresses.push([address, value.sent, value.received, value.isContract]);
     }
 
-    var meta = new Table();
-    meta.push(
+    var global = new Table();
+    global.push(
       { "Total ETH Transferred": data.totalEth },
       { "Unique addresses sent transactions?": uniqueSent },
       { "Unique addresses received transactions?": uniqueReceived },
@@ -130,6 +133,6 @@ export default class CLI {
     console.log(addresses.toString());
 
     console.log("Global Metrics");
-    console.log(meta.toString());
+    console.log(global.toString());
   }
 }
