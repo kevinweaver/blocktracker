@@ -87,15 +87,18 @@ export default class CLI {
     return inquirer.prompt(range);
   }
 
-  loading(start: number, end: number) {
-    clear();
-
-    console.log(
-      chalk.yellow(
-        figlet.textSync("exploring...", { horizontalLayout: "full" })
-      ),
-      `\nblocks ${chalk.yellow(start)} to ${chalk.yellow(end)}`
-    );
+  loading(start: number, end?: number) {
+    if (end == undefined) {
+      console.log(`Exploring block ${chalk.yellow(start)}...`);
+    } else {
+      clear();
+      console.log(
+        chalk.yellow(
+          figlet.textSync("exploring...", { horizontalLayout: "full" })
+        ),
+        `\nblocks ${chalk.yellow(start)} to ${chalk.yellow(end)}`
+      );
+    }
   }
 
   //TODO update this to output type once implemented

@@ -112,7 +112,7 @@ export default class Explorer {
 
     // Render optional loading screen
     if (loading) {
-      loading(start, end);
+      loading(start, end); //"Exploring blocks _ to _"
     }
 
     let data = this.initializeOutput(start, end, current);
@@ -121,7 +121,9 @@ export default class Explorer {
     for (let i = start; i <= end; i++) {
       try {
         let block = await web3.eth.getBlock(i);
-        console.log(`Exploring block ${i}...`);
+        if (loading) {
+          loading(i); // "Exploring block i..."
+        }
 
         // Traverse transactions
         for (let t = 0; t < block.transactions.length; t++) {
