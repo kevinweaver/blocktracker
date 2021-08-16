@@ -88,12 +88,17 @@ export default class Explorer {
     }
 
     // Process "to" address value
-    let to = await this.findOrCreateAddress(transaction.to, data.addresses);
-    to.received += +transaction.value;
+    if (+transaction.value > 0) {
+      let to = await this.findOrCreateAddress(transaction.to, data.addresses);
+      to.received += +web3.utils.fromWei(transaction.value, "ether");
 
-    // Process "from" address
-    let from = await this.findOrCreateAddress(transaction.from, data.addresses);
-    from.sent += +transaction.value;
+      // Process "from" address
+      let from = await this.findOrCreateAddress(
+        transaction.from,
+        data.addresses
+      );
+      from.sent += +web3.utils.fromWei(transaction.value, "ether");
+    }
   }
 
   /**

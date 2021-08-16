@@ -1,6 +1,7 @@
 # BlockTracker
 
-A basic Ethereum block explorer.
+A basic Ethereum block explorer. Takes a block range and
+returns analytics about the transactions within.
 
 ## Develop
 

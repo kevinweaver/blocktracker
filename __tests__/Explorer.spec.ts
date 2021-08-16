@@ -100,16 +100,16 @@ describe("Explorer", () => {
         let addresses: Addresses = {};
         addresses[defaultAccount] = {
           received: 0,
-          sent: eth(10),
+          sent: 10,
           isContract: false,
         };
         addresses[alice] = {
-          received: eth(10),
-          sent: eth(1),
+          received: 10,
+          sent: 1,
           isContract: false,
         };
         addresses[bob] = {
-          received: eth(1),
+          received: 1,
           sent: 0,
           isContract: false,
         };
