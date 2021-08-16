@@ -17,7 +17,8 @@
 - [x] Create Address data object
 - [x] Return Address object to CLI
 - [x] Collect contract data
-- [] Collect ether totals
+- [x] Collect ether totals
+- [x] Collect contract totals
 - [] Validate input for OOB errors
 - [] index.run() tests to run against stdout
 - [] Add "search again" prompt to CLI

@@ -109,17 +109,21 @@ export default class CLI {
       head: ["Address", "Ether Sent", "Ether Received", "Contract?"],
     });
 
+    let uniqueSent = 0;
+    let uniqueReceived = 0;
     for (const [address, value] of Object.entries(data.addresses)) {
+      value.sent > 0 && ++uniqueSent;
+      value.received > 0 && ++uniqueReceived;
       addresses.push([address, value.sent, value.received, value.isContract]);
     }
 
     var meta = new Table();
     meta.push(
-      { "Total ETH Transferred": "708" },
-      { "Unique addresses sent transactions?": "2" },
-      { "Unique addresses received transactions?": "3" },
-      { "How many uncle blocks?": "6" },
-      { "How many contracts created?": "6" }
+      { "Total ETH Transferred": data.totalEth },
+      { "Unique addresses sent transactions?": uniqueSent },
+      { "Unique addresses received transactions?": uniqueReceived },
+      { "How many uncle blocks?": "_" },
+      { "How many contracts created?": data.contractsCreated }
     );
 
     console.log("Address Metrics");
