@@ -1,10 +1,9 @@
-import { web3 } from "../src/web3";
+import { web3 } from "../../src/web3";
+const { contractByteCode, contractAbi } = require("./exampleContract");
 
 // set to any type as a work-around to web3.currentProvider.send() error:
 // Property 'send' does not exist on type 'provider'.
 let web3Provider: any = web3.currentProvider;
-
-export const mockWeb3 = () => {};
 
 export const eth = (amount: number) => {
   return +web3.utils.toWei(`${amount}`, "ether");
@@ -46,4 +45,30 @@ export async function seedUsers() {
   await web3.eth.personal.unlockAccount(alice, "alice", 10000);
 
   return [ganache, alice, bob];
+}
+
+export async function createContract(account: string) {
+  //Contract object and account info
+  let contract = new web3.eth.Contract(contractAbi);
+
+  // Function Parameter
+  let payload = {
+    data: contractByteCode,
+  };
+
+  let parameter = {
+    from: account,
+    gas: +web3.utils.toHex(800000),
+    gasPrice: web3.utils.toHex(web3.utils.toWei("30", "gwei")),
+  };
+
+  // Function Call
+  let contractAddress = await contract
+    .deploy(payload)
+    .send(parameter, () => {})
+    .on("confirmation", () => {})
+    .then((newContractInstance) => {
+      return newContractInstance.options.address;
+    });
+  return contractAddress;
 }

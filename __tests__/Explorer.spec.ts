@@ -7,7 +7,13 @@ import {
   Transaction,
   ExplorerData,
 } from "../src/ExplorerInterfaces";
-import { mockWeb3, seedUsers, saveState, revertState, eth } from "./utils";
+import {
+  createContract,
+  seedUsers,
+  saveState,
+  revertState,
+  eth,
+} from "./utils/helpers";
 
 function provider() {
   const Ganache = require("ganache-core");
@@ -23,7 +29,6 @@ let addresses = [];
 let defaultAccount = "";
 let alice = "";
 let bob = "";
-let snapshot_id = 0;
 
 beforeEach(async () => {
   await saveState();
@@ -41,27 +46,29 @@ afterEach(async () => {
 });
 
 describe("Explorer", () => {
-
   describe("getCurrentBlock()", () => {
-    beforeEach(async () => {
+    test("returns the latest block number", async () => {
+      let explorer = new Explorer(0, 0);
+      expect(explorer.getCurrentBlock()).resolves.toBe(0);
       await web3.eth.sendTransaction({
         to: alice,
         from: defaultAccount,
         value: eth(11),
       });
-    });
-
-    test("it returns the latest block number", async () => {
-      let explorer = new Explorer(0, 0);
-      expect(explorer.getCurrentBlock()).resolves.toBe(1)
+      expect(explorer.getCurrentBlock()).resolves.toBe(1);
     });
   });
 
   describe("isContract()", () => {
-    //test("it returns true when address is a contract", async () => {});
-    test("it returns false when address is not a contract", async () => {
-      let explorer = new Explorer(0, 0);
-      expect(explorer.isContract(defaultAccount)).resolves.toBe(false);
+    let explorer = new Explorer(0, 0);
+    test("returns true when address is a contract", async () => {
+      const contract = await createContract(defaultAccount);
+      const response = await explorer.isContract(contract);
+      expect(response).toBe(true);
+    });
+
+    test("returns false when address is not a contract", async () => {
+      expect(explorer.isContract(alice)).resolves.toBe(false);
     });
   });
 
@@ -74,7 +81,7 @@ describe("Explorer", () => {
     //   test("it searches the correct number of blocks", async () => {});
     // });
 
-    describe("processes transaction data", () => {
+    describe("given transaction data", () => {
       beforeEach(async () => {
         await web3.eth.sendTransaction({
           to: alice,
@@ -89,7 +96,7 @@ describe("Explorer", () => {
         });
       });
 
-      test("it returns analytics data", async () => {
+      test("it returns correct ExplorerData", async () => {
         let addresses: Addresses = {};
         addresses[defaultAccount] = {
           received: 0,

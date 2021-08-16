@@ -42,12 +42,12 @@ export default class Explorer {
     };
   }
 
-  async getCurrentBlock() {
-    return web3.eth.getBlockNumber();
+  async getCurrentBlock(): Promise<number> {
+    return await web3.eth.getBlockNumber();
   }
 
   async isContract(address: string): Promise<boolean> {
-    return false;
+    return (await web3.eth.getCode(address)) != "0x";
   }
 
   private setRangeAscending(current: number) {
@@ -100,7 +100,7 @@ export default class Explorer {
    * run(loading)
    * Parses a blockchain given the explorer's start and end blocks
    *
-   * @param loading - An optional loading function to console.log
+   * @param loading - An optional loading function to call
    */
   async run(loading?: Function): Promise<ExplorerData> {
     // TODO ensure values not OOB
