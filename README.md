@@ -8,13 +8,25 @@ returns analytics about the transactions within.
 First, to install dependencies, run:
 `yarn install`
 
-Then, to build the app, run:
+Then, to compile typescript files, run:
 `yarn build`
 
 Finally, to run the app:
-`yarn run`
+`yarn start`
+
+\*\*Optional: To run app via ts-node without building:
+`yarn dev`
 
 ## Testing
 
 To run tests:
 `yarn test`
+
+## Important Files
+
+| File            |                                     Description                                      |
+| --------------- | :----------------------------------------------------------------------------------: |
+| src/cli.ts      |                     The command line interface for the Explorer.                     |
+| src/Explorer.ts |   The class that functions to traverse a blockchain and return various analytics.    |
+| src/index.ts    |             Takes the output of the CLI and provides it to the Explorer.             |
+| TODO.md         | I typically wouldn't check this in, but did so in this case to document my approach. |

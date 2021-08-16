@@ -19,8 +19,6 @@
 - [x] Collect contract data
 - [x] Collect ether totals
 - [x] Collect contract totals
-- [x] Catch Invalid JSON RPC response: ""
+- [x] Add error handling for block and transaction errors
 - [x] Allow user to search 0 blocks from current
-- [] index.run() tests to run against stdout
-- [] Add "search again" prompt to CLI
-- [] Fix Linking failure in asm.js: Unexpected stdlib member
+- [x] Update README.md with final notes

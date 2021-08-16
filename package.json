@@ -2,17 +2,18 @@
   "name": "blocktracker",
   "version": "1.0.0",
   "description": "Basic blockchain explorer",
+  "author": "Kevin Weaver",
+  "license": "MIT",
   "main": "index.ts",
   "compilerOptions": {
     "esModuleInterop": true
   },
   "scripts": {
     "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
     "test": "jest",
     "build": "tsc"
   },
-  "author": "Kevin Weaver",
-  "license": "MIT",
   "devDependencies": {
     "@types/jest": "^26.0.24",
     "ganache-core": "^2.13.2",
