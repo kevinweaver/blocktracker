@@ -5,21 +5,30 @@ returns analytics about the transactions within.
 
 ## Develop
 
-First, to install dependencies, run:
+First time setup, you'll need to add an infura network key to a `.env` file. If you don't have one, just copy the example key:
+
+`cp .env.example .env`
+
+Install dependencies with:
+
 `yarn install`
 
-Then, to compile typescript files, run:
+Compile typescript files with:
+
 `yarn build`
 
-Finally, to run the app:
+Run the app with:
+
 `yarn start`
 
 \*\*Optional: To run app via ts-node without building:
+
 `yarn dev`
 
 ## Testing
 
 To run tests:
+
 `yarn test`
 
 ## Important Files
