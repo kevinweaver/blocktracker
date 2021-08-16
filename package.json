@@ -1,9 +1,37 @@
 {
   "name": "blocktracker",
   "version": "1.0.0",
-  "description": "A basic block explorer",
-  "main": "index.js",
-  "repository": "https://github.com/kevinweaver/blocktracker",
+  "description": "Basic blockchain explorer",
   "author": "Kevin Weaver",
-  "license": "MIT"
+  "license": "MIT",
+  "main": "index.ts",
+  "compilerOptions": {
+    "esModuleInterop": true
+  },
+  "scripts": {
+    "dev": "ts-node src/index.ts",
+    "start": "node dist/index.js",
+    "test": "jest",
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "@types/jest": "^26.0.24",
+    "ganache-core": "^2.13.2",
+    "jest": "^27.0.6",
+    "ts-jest": "^27.0.4",
+    "typescript": "^4.3.5"
+  },
+  "dependencies": {
+    "@types/clear": "^0.1.2",
+    "@types/figlet": "^1.5.4",
+    "chalk": "^4.1.1",
+    "clear": "^0.1.0",
+    "cli-table": "^0.3.6",
+    "dotenv": "^10.0.0",
+    "figlet": "^1.5.0",
+    "ganache-cli": "^6.12.2",
+    "inquirer": "^8.1.2",
+    "ts-node": "^10.1.0",
+    "web3": "^1.4.0"
+  }
 }
