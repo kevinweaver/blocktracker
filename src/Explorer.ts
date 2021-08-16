@@ -13,15 +13,7 @@ import {
  */
 
 export default class Explorer {
-  start: number;
-  end: number;
-  current: number;
-
-  constructor(start: number, end: number) {
-    this.start = start;
-    this.end = end;
-    this.current = 0;
-  }
+  constructor() {}
 
   //TODO - make end optional
   private initializeOutput(
@@ -35,8 +27,6 @@ export default class Explorer {
       current,
       totalEth: 0,
       uncles: 0,
-      sent: 0,
-      received: 0,
       contractsCreated: 0,
       addresses: {},
     };
@@ -50,21 +40,25 @@ export default class Explorer {
     return (await web3.eth.getCode(address)) != "0x";
   }
 
-  private setRangeAscending(current: number) {
+  private eth(wei: string) {
+    return +web3.utils.fromWei(wei, "ether");
+  }
+
+  private setRangeAscending(start: number, end: number, current: number) {
     // If the user has selected "X blocks from current", update values
     //TODO - set this to optional param
-    if (this.end == -1) {
-      this.end = current;
-      this.start = current - this.start;
+    if (end == -1) {
+      end = current;
+      start = current - start;
     }
 
     // If the user entered a higher start value, swap them
-    if (this.start > this.end) {
-      let tempStart = this.start;
-      this.start = this.end;
-      this.end = tempStart;
+    if (start > end) {
+      const tempStart = start;
+      start = end;
+      end = tempStart;
     }
-    return [this.start, this.end];
+    return [start, end];
   }
 
   private async findOrCreateAddress(
@@ -72,7 +66,7 @@ export default class Explorer {
     addresses: Addresses
   ): Promise<Address> {
     if (!addresses.hasOwnProperty(address)) {
-      let isContract = await this.isContract(address);
+      const isContract = await this.isContract(address);
       addresses[address] = { received: 0, sent: 0, isContract };
     }
     return addresses[address];
@@ -82,39 +76,48 @@ export default class Explorer {
     transaction: Transaction,
     data: ExplorerData
   ) {
-    //TODO - confirm
+    //Process contract creation
     if (transaction.to == null) {
       ++data.contractsCreated;
     }
 
-    // Process "to" address value
     if (+transaction.value > 0) {
-      let to = await this.findOrCreateAddress(transaction.to, data.addresses);
-      to.received += +web3.utils.fromWei(transaction.value, "ether");
+      const ether = this.eth(transaction.value);
+
+      //Process total ether transferred
+      data.totalEth += ether;
+
+      // Process "to" address value
+      const to = await this.findOrCreateAddress(transaction.to, data.addresses);
+      to.received += ether;
 
       // Process "from" address
-      let from = await this.findOrCreateAddress(
+      const from = await this.findOrCreateAddress(
         transaction.from,
         data.addresses
       );
-      from.sent += +web3.utils.fromWei(transaction.value, "ether");
+      from.sent += ether;
     }
   }
 
   /**
    * run(loading)
-   * Parses a blockchain given the explorer's start and end blocks
+   * Parses a blockchain given start and end blocks
    *
    * @param loading - An optional loading function to call
    */
-  async run(loading?: Function): Promise<ExplorerData> {
+  async run(
+    start: number,
+    end: number,
+    loading?: Function
+  ): Promise<ExplorerData> {
     // TODO ensure values not OOB
     //this.validateInput()
 
     let current = await this.getCurrentBlock();
 
     // Ensure range is lowest -> highest
-    let [start, end] = this.setRangeAscending(current);
+    [start, end] = this.setRangeAscending(start, end, current);
 
     // Render optional loading screen
     if (loading) {
@@ -123,12 +126,14 @@ export default class Explorer {
 
     let data = this.initializeOutput(start, end, current);
 
-    for (let i = this.start; i <= this.end; i++) {
+    for (let i = start; i <= end; i++) {
       //TODO catch errors
       let block = await web3.eth.getBlock(i);
       for (let t = 0; t < block.transactions.length; t++) {
         //TODO catch errors
-        let transaction = await web3.eth.getTransaction(block.transactions[t]);
+        const transaction = await web3.eth.getTransaction(
+          block.transactions[t]
+        );
         await this.processTransactionData(transaction, data);
       }
     }

@@ -16,9 +16,11 @@
 - [x] Return output in table form
 - [x] Create Address data object
 - [x] Return Address object to CLI
-- [] Collect contract data
+- [x] Collect contract data
+- [] Collect ether totals
 - [] Validate input for OOB errors
 - [] index.run() tests to run against stdout
 - [] Add "search again" prompt to CLI
 - [] Debug and/or catch Invalid JSON RPC response: ""
-- [] Fix range input to properly calculate # of blocks
+- [] Allow user to search 0 blocks from current
+- [] Fix Linking failure in asm.js: Unexpected stdlib member

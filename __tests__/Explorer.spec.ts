@@ -48,7 +48,7 @@ afterEach(async () => {
 describe("Explorer", () => {
   describe("getCurrentBlock()", () => {
     test("returns the latest block number", async () => {
-      let explorer = new Explorer(0, 0);
+      let explorer = new Explorer();
       expect(explorer.getCurrentBlock()).resolves.toBe(0);
       await web3.eth.sendTransaction({
         to: alice,
@@ -60,7 +60,7 @@ describe("Explorer", () => {
   });
 
   describe("isContract()", () => {
-    let explorer = new Explorer(0, 0);
+    let explorer = new Explorer();
     test("returns true when address is a contract", async () => {
       const contract = await createContract(defaultAccount);
       const response = await explorer.isContract(contract);
@@ -81,7 +81,7 @@ describe("Explorer", () => {
     //   test("it searches the correct number of blocks", async () => {});
     // });
 
-    describe("given transaction data", () => {
+    describe("given transaction data and contract creation", () => {
       beforeEach(async () => {
         await web3.eth.sendTransaction({
           to: alice,
@@ -94,6 +94,8 @@ describe("Explorer", () => {
           from: alice,
           value: eth(1),
         });
+
+        await createContract(defaultAccount);
       });
 
       test("it returns correct ExplorerData", async () => {
@@ -115,18 +117,16 @@ describe("Explorer", () => {
         };
         let expectedOutput: ExplorerData = {
           start: 0,
-          end: 2,
-          current: 2,
-          totalEth: 0,
+          end: 3,
+          current: 3,
+          totalEth: 11,
           uncles: 0,
-          sent: 0,
-          received: 0,
-          contractsCreated: 0,
+          contractsCreated: 1,
           addresses,
         };
 
-        let explorer = new Explorer(0, 2);
-        const receivedOutput = await explorer.run();
+        let explorer = new Explorer();
+        const receivedOutput = await explorer.run(0, 3);
 
         expect(receivedOutput).toEqual(expectedOutput);
       });

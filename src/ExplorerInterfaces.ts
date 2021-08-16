@@ -20,8 +20,6 @@ export interface ExplorerData {
   current: number;
   totalEth: number;
   uncles: number;
-  sent: number;
-  received: number;
   contractsCreated: number;
   addresses: Addresses;
 }
