@@ -78,9 +78,10 @@ describe("Explorer", () => {
           end: 2,
           current: 2,
           totalEth: 0,
-          uncles: 0,
           contractsCreated: 0,
           addresses,
+          blockErrors: {},
+          transactionErrors: {},
         };
 
         const receivedOutput = await explorer.run({ start: 0 });
@@ -102,9 +103,10 @@ describe("Explorer", () => {
           end: 1,
           current: 2,
           totalEth: 0,
-          uncles: 0,
           contractsCreated: 0,
           addresses,
+          blockErrors: {},
+          transactionErrors: {},
         };
 
         const receivedOutput = await explorer.run({ start: 0, end: 1 });
@@ -152,9 +154,10 @@ describe("Explorer", () => {
           end: 3,
           current: 3,
           totalEth: 11,
-          uncles: 0,
           contractsCreated: 1,
           addresses,
+          blockErrors: {},
+          transactionErrors: {},
         };
 
         const receivedOutput = await explorer.run({ start: 0, end: 3 });

@@ -26,9 +26,10 @@ export default class Explorer {
       end,
       current,
       totalEth: 0,
-      uncles: 0,
       contractsCreated: 0,
       addresses: {},
+      blockErrors: {},
+      transactionErrors: {},
     };
   }
 
@@ -118,15 +119,27 @@ export default class Explorer {
 
     let data = this.initializeOutput(start, end, current);
 
+    // Traverse blocks
     for (let i = start; i <= end; i++) {
-      //TODO catch errors
-      let block = await web3.eth.getBlock(i);
-      for (let t = 0; t < block.transactions.length; t++) {
-        //TODO catch errors
-        const transaction = await web3.eth.getTransaction(
-          block.transactions[t]
-        );
-        await this.processTransactionData(transaction, data);
+      try {
+        let block = await web3.eth.getBlock(i);
+        console.log(`Exploring block ${i}...`);
+
+        // Traverse transactions
+        for (let t = 0; t < block.transactions.length; t++) {
+          try {
+            const transaction = await web3.eth.getTransaction(
+              block.transactions[t]
+            );
+            await this.processTransactionData(transaction, data);
+          } catch (e) {
+            data.transactionErrors[t.toString()] = e.toString();
+            console.log(`Error processing transaction ${t}: ${e}`);
+          }
+        }
+      } catch (e) {
+        data.blockErrors[i.toString()] = e.toString();
+        console.log(`Error processing block ${i}: ${e}`);
       }
     }
 

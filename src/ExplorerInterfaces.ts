@@ -8,6 +8,10 @@ export interface Addresses {
   [key: string]: Address;
 }
 
+export interface Errors {
+  [key: string]: string;
+}
+
 export interface Transaction {
   to: string;
   from: string;
@@ -25,7 +29,8 @@ export interface ExplorerData {
   end: number;
   current: number;
   totalEth: number;
-  uncles: number;
   contractsCreated: number;
   addresses: Addresses;
+  blockErrors: Errors;
+  transactionErrors: Errors;
 }

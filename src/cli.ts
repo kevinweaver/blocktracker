@@ -125,14 +125,40 @@ export default class CLI {
       { "Total ETH Transferred": data.totalEth },
       { "Unique addresses sent transactions?": uniqueSent },
       { "Unique addresses received transactions?": uniqueReceived },
-      { "How many uncle blocks?": "_" },
       { "How many contracts created?": data.contractsCreated }
     );
+
+    let blockErrorCount = 0;
+    var blockErrors = new Table({
+      head: ["Error Encountered", "Block #"],
+    });
+    for (const [address, value] of Object.entries(data.blockErrors)) {
+      ++blockErrorCount;
+      blockErrors.push([value, address]);
+    }
+
+    let transactionErrorCount = 0;
+    var transactionErrors = new Table({
+      head: ["Error Encountered", "Transaction #"],
+    });
+    for (const [address, value] of Object.entries(data.blockErrors)) {
+      ++transactionErrorCount;
+      transactionErrors.push([value, address]);
+    }
 
     console.log("Address Metrics");
     console.log(addresses.toString());
 
     console.log("Global Metrics");
     console.log(global.toString());
+
+    if (blockErrorCount > 0) {
+      console.log("Block Errors");
+      console.log(blockErrors.toString());
+    }
+    if (transactionErrorCount > 0) {
+      console.log("Transaction Errors");
+      console.log(transactionErrors.toString());
+    }
   }
 }
